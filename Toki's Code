@@ -3,32 +3,32 @@ import pygame
 # 初始化Pygame
 pygame.init()
 
-#设置窗口
+# 设置窗口
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Farm Game")
 
-#颜色定义
+# 颜色定义
 GREEN = (34, 139, 34)  # 草地背景色
 BROWN = (139, 69, 19)  # 土地颜色
 YELLOW = (255, 255, 0)  # 太阳颜色
 RED = (255, 0, 0)  # 西红柿颜色
 BLACK = (0, 0, 0)  # 文本颜色
 
-#游戏变量
+# 游戏变量
 leaves = []  # 存储叶子的位置
 sun_x = -100  # 太阳初始位置
 click_count = 0  # 玩家点击次数
 game_stage = 0  # 游戏阶段（0：种植，1：等待生长，2：西红柿成熟）
 font = pygame.font.Font(None, 36)  # 文本字体
 
-#绘制文本
+# 绘制文本
 def draw_text(text, font, color, x, y):
     textobj = font.render(text, True, color)
     screen.blit(textobj, (x, y))
 
-#主游戏循环
+# 主游戏循环
 def main():
     global sun_x, click_count, game_stage, leaves
 
@@ -37,7 +37,7 @@ def main():
     while True:
         screen.fill(GREEN)  # 背景为绿色
 
-        #检查事件
+        # 检查事件
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -48,13 +48,13 @@ def main():
                     leaves.append([x, y])
                     click_count += 1
 
-                    #当点击次数达到 6 次后，进入等待阶段
+                    # 当点击次数达到 6 次后，进入等待阶段
                     if click_count >= 6:
                         game_stage = 1
 
         # 绘制文本：右上角显示提示文本
         if game_stage == 0:
-            draw_text("Please press anywhere to plant your tomatoes.", font, BLACK, 250, 50)
+            draw_text("Please press anywhere 6 times on the sail to plant your tomatoes.", font, BLACK, 250, 50)
         elif game_stage == 1:
             draw_text("Please wait one day for your tomatoes.", font, BLACK, 250, 50)
 
@@ -63,7 +63,7 @@ def main():
 
         # 绘制叶子或西红柿
         for leaf in leaves:
-            if game_stage == 0:  # 在种植阶段，显示叶子（绿色椭圆）
+            if game_stage == 0 or game_stage == 1:  # 在种植和等待阶段，显示叶子（绿色椭圆）
                 pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
             elif game_stage == 2:  # 在西红柿成熟阶段，显示西红柿（红色圆形）
                 pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), 20)
@@ -85,5 +85,6 @@ def main():
 
 # 运行游戏
 main()
+
 
 
