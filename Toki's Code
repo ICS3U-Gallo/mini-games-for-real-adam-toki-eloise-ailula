@@ -54,7 +54,7 @@ def main():
 
         # 绘制文本：右上角显示提示文本
         if game_stage == 0:
-            draw_text("Please press anywhere 6 times on the sail to plant your tomatoes.", font, BLACK, 250, 50)
+            draw_text("Press anywhere 6 times to plant tomatoes.", font, BLACK, 250, 50)
         elif game_stage == 1:
             draw_text("Please wait one day for your tomatoes.", font, BLACK, 250, 50)
 
