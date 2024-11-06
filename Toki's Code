@@ -1,1 +1,32 @@
+import pygame
+
+# initial Pygame
+pygame.init()
+
+# screen setting
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Farm Game")
+
+# colors for grass and sail
+GREEN = (34, 139, 34)  
+BROWN = (139, 69, 19)  
+
+#loop循环游戏
+def main():
+    while True:
+        screen.fill(GREEN)  
+# (x, y, 宽, 高)
+        pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))  
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+        #刷新
+        pygame.display.flip()
+
+main()
 
