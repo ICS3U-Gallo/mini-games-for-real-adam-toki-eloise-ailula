@@ -11,3 +11,15 @@ pygame.display.set_caption("Adam's small shop")
 #颜色设置
 yinlan = (181, 193, 207)
 lanhuise = (138, 164, 168)
+shibanhui = (112, 128, 105)
+tianlanse = (240, 255, 255)
+baiyan = (245, 245, 245)
+dankese = (252, 230, 201)
+xiangjiaose = (227, 207, 87)
+huluobose = (237, 145, 33)
+tianlan = (135, 206, 235)
+
+# 游戏主循环
+running = True
+while running:
+    screen.fill(tianlan)
