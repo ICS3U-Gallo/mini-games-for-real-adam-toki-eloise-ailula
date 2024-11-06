@@ -1,15 +1,15 @@
 import pygame
 
-# initial Pygame
+#Pygame的初始化
 pygame.init()
 
-# screen setting
+#屏幕的设置
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Farm Game")
 
-# colors for grass and sail
+# 颜色 for grass and sail
 GREEN = (34, 139, 34)  
 BROWN = (139, 69, 19)  
 
@@ -17,7 +17,7 @@ BROWN = (139, 69, 19)
 def main():
     while True:
         screen.fill(GREEN)  
-# (x, y, 宽, 高)
+# 宽, 高
         pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))  
 
         for event in pygame.event.get():
