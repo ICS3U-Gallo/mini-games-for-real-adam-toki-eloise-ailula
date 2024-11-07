@@ -1,4 +1,5 @@
-Story (feed up the sheep) (forgive me if I did wrong, please!)
+#下次非代码语句前请加井号谢谢。
+#Story (feed up the sheep) (forgive me if I did wrong, please!)
 
 # pygame template
 
@@ -7,7 +8,7 @@ import pygame
 
 pygame.init()
 
-Set a basket, put the foods insides, if the sheep get into hungry, just feed it up by the food from the basket.
+#Set a basket, put the foods insides, if the sheep get into hungry, just feed it up by the food from the basket.
 WIDTH = 200
 HEIGHT = 200
 SIZE = (WIDTH, HEIGHT)
