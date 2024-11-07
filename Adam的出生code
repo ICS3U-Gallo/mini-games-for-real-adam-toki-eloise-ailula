@@ -23,6 +23,7 @@ tianlan = (135, 206, 235)
 running = True
 while running:
     screen.fill(tianlan)
+    pygame.draw.rect(screen, shibanhui, (0, height // 2, width, height // 2))
     pygame.display.flip()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
