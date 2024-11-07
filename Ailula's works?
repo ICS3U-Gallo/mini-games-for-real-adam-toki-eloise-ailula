@@ -7,10 +7,11 @@ import pygame
 
 pygame.init()
 
-# Set a basket,
-# Put the food inside,
-# If the sheep get into hungry,
-# Just feed it with the food from the basket.
+# Goal:
+    # Set a basket,
+    # Put the food inside,
+    # If the sheep get hungry,
+    # Just feed it with the food from the basket.
 
 WIDTH = 200
 HEIGHT = 200
