@@ -23,10 +23,6 @@ click_count = 0  # 玩家点击次数
 game_stage = 0  # 游戏阶段（0：种植，1：等待生长，2：西红柿成熟）
 font = pygame.font.Font(None, 36)  # 文本字体
 
-# 绘制文本
-def draw_text(text, font, color, x, y):
-    textobj = font.render(text, True, color)
-    screen.blit(textobj, (x, y))
 
 # 主游戏循环
 def main():
