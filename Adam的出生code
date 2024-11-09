@@ -1,0 +1,36 @@
+import pygame
+import sys
+import random
+
+# 初始化
+pygame.init()
+width, height = 600, 400
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Adam's small shop")
+
+#颜色设置
+yinlan = (181, 193, 207)
+lanhuise = (138, 164, 168)
+shibanhui = (112, 128, 105)
+tianlanse = (240, 255, 255)
+baiyan = (245, 245, 245)
+dankese = (252, 230, 201)
+xiangjiaose = (227, 207, 87)
+huluobose = (237, 145, 33)
+tianlan = (135, 206, 235)
+
+# 游戏主循环
+running = True
+while running:
+    screen.fill(tianlan)
+    pygame.draw.rect(screen, shibanhui, (0, height // 2, width, height // 2))
+    pygame.draw.rect(screen, lanhuise, (20, 250, 50, 130))
+    pygame.draw.rect(screen, lanhuise, (520, 250, 50, 130))
+    pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    pygame.time.Clock().tick(30)
+
+pygame.quit
+sys.exit()
