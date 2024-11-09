@@ -107,3 +107,5 @@ for i in pygame:
         print("food out from basket")
     elif:
         print("foods staying in the basket")
+# Nov 8th
+# Story?
