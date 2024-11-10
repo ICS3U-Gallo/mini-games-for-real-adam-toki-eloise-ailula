@@ -1,0 +1,74 @@
+import pygame
+import random
+
+# 初始化pygame
+pygame.init()
+
+# 设置屏幕大小
+screen = pygame.display.set_mode((800, 600))
+
+# 设置标题
+pygame.display.set_caption("篮子接金蛋")
+
+# 定义颜色
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GOLD = (255, 215, 0)
+
+# 玩家设置
+player_size = 100
+player_pos = [350, 550]
+player_speed = 10
+
+# 金蛋设置
+egg_size = 50
+egg_pos = [random.randint(0, 750), 0]
+egg_fall_speed = 10
+
+# 游戏状态
+running = True
+score = 0
+font = pygame.font.Font(None, 36)
+
+def draw_player():
+    pygame.draw.rect(screen, BLACK, (player_pos[0], player_pos[1], player_size, 20))
+
+def draw_egg():
+    pygame.draw.circle(screen, GOLD, egg_pos, egg_size // 2)
+
+def check_collision():
+    global score, egg_pos
+    if player_pos[0] < egg_pos[0] < player_pos[0] + player_size and player_pos[1] < egg_pos[1] < player_pos[1] + 20:
+        score += 1
+        egg_pos = [random.randint(0, 750), 0]  # 重新生成金蛋的位置
+
+# 游戏主循环
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and player_pos[0] > 0:
+        player_pos[0] -= player_speed
+    if keys[pygame.K_RIGHT] and player_pos[0] < 700:
+        player_pos[0] += player_speed
+
+    # 更新金蛋位置
+    egg_pos[1] += egg_fall_speed
+    if egg_pos[1] > 600:
+        egg_pos = [random.randint(0, 750), 0]
+
+    screen.fill(WHITE)
+    draw_player()
+    draw_egg()
+    check_collision()
+
+    # 显示分数
+    score_text = font.render(f"Score: {score}", True, BLACK)
+    screen.blit(score_text, (10, 10))
+
+    pygame.display.flip()
+    pygame.time.delay(30)
+
+pygame.quit()
