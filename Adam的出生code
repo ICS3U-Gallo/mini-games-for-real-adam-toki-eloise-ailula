@@ -19,6 +19,18 @@ xiangjiaose = (227, 207, 87)
 huluobose = (237, 145, 33)
 tianlan = (135, 206, 235)
 
+# 游戏数据
+money = 100
+inventory = {"Carrot": 0, "Apple": 0}
+crop_prices = {"Carrot": 10, "Apple": 15}
+sell_prices = {"Carrot": 8, "Apple": 12}
+
+#这将创建一个 Pygame 可以用来渲染文本的字体对象（并且是大的）。
+font = pygame.font.Font(None, 36)
+#设置较小的字体。
+small_font = pygame.font.Font(None, 24)
+
+
 # 游戏主循环
 running = True
 while running:
