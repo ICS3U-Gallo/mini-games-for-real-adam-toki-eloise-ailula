@@ -39,6 +39,87 @@ while running:
     pygame.draw.rect(screen, lanhuise, (20, 250, 50, 130))
     pygame.draw.rect(screen, lanhuise, (520, 250, 50, 130))
     pygame.display.flip()
+
+    # 显示金钱和库存
+    money_text = font.render(f"Money: ${money}", True, (255, 255, 255))
+    inventory_text = font.render(f"Inventory - Carrot: {inventory['Carrot']}, Apple: {inventory['Apple']}", True, (255, 255, 255))
+    screen.blit(money_text, (10, 10))
+    screen.blit(inventory_text, (10, 50))
+
+    #鼠标位置
+    mouse_pos = pygame.mouse.get_pos()
+
+    # 购买胡萝卜按钮
+    button_clicked = False
+    if 50 < mouse_pos[0] < 150 and 300 < mouse_pos[1] < 340:
+        pygame.draw.rect(screen, xiangjiaose, (50, 300, 100, 40))
+        if pygame.mouse.get_pressed()[0]:
+            button_clicked = True
+    else:
+        pygame.draw.rect(screen, dankese, (50, 300, 100, 40))
+
+    
+    button_text = small_font.render("Buy Carrot", True, (0, 0, 0))
+    screen.blit(button_text, (60, 310))
+
+    # 检查“购买胡萝卜”按钮是否被点击
+    if button_clicked and money >= crop_prices["Carrot"]:
+        money -= crop_prices["Carrot"]
+        inventory["Carrot"] += 1
+
+    # 购买 Apple Button
+    button_clicked = False
+    if 200 < mouse_pos[0] < 300 and 300 < mouse_pos[1] < 340:
+        pygame.draw.rect(screen, xiangjiaose, (200, 300, 100, 40))
+        if pygame.mouse.get_pressed()[0]:
+            button_clicked = True
+    else:
+        pygame.draw.rect(screen, dankese, (200, 300, 100, 40))
+
+    button_text = small_font.render("Buy Apple", True, (0, 0, 0))
+    screen.blit(button_text, (210, 310))
+
+    # 检查是否点击了“购买 Apple”按钮
+    if button_clicked and money >= crop_prices["Apple"]:
+        money -= crop_prices["Apple"]
+        inventory["Apple"] += 1
+
+    # 卖胡萝卜按钮
+    button_clicked = False
+    if 350 < mouse_pos[0] < 450 and 300 < mouse_pos[1] < 340:
+        pygame.draw.rect(screen, xiangjiaose, (350, 300, 100, 40))
+        if pygame.mouse.get_pressed()[0]:
+            button_clicked = True
+    else:
+        pygame.draw.rect(screen, dankese, (350, 300, 100, 40))
+
+    button_text = small_font.render("Sell Carrot", True, (0, 0, 0))
+    screen.blit(button_text, (360, 310))
+
+    # 检查“卖胡萝卜”按钮是否被点击
+    if button_clicked and inventory["Carrot"] > 0:
+        money += sell_prices["Carrot"]
+        inventory["Carrot"] -= 1
+
+    # 出售苹果按钮
+    button_clicked = False
+    if 500 < mouse_pos[0] < 600 and 300 < mouse_pos[1] < 340:
+        pygame.draw.rect(screen, xiangjiaose, (500, 300, 100, 40))
+        if pygame.mouse.get_pressed()[0]:
+            button_clicked = True
+    else:
+        pygame.draw.rect(screen, dankese, (500, 300, 100, 40))
+
+    button_text = small_font.render("Sell Apple", True, (0, 0, 0))
+    screen.blit(button_text, (510, 310))
+
+    # 检查“卖出苹果”按钮是否被点击
+    if button_clicked and inventory["Apple"] > 0:
+        money += sell_prices["Apple"]
+        inventory["Apple"] -= 1
+
+    pygame.display.flip()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
