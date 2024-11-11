@@ -60,7 +60,6 @@ pygame.quit()
 
 import pygame
 
-
 pygame.init()
 
 WIDTH = 640
@@ -102,10 +101,20 @@ while running:
 
 pygame.quit()
 
-for i in pygame:
+for food in pygame:
     if sheep hungry:
         print("food out from basket")
     elif:
         print("foods staying in the basket")
-# Nov 8th
-# Story?
+
+#Rewrite the pygame of feed up the sheep
+# Goals:There are food inside the basket, feed the sheep according to the levels of its hungry.
+# basket's entirety
+WIDTH, HEIGHT = 400, 400
+# Colour:
+    Brown == full of the basket.
+There are full food that it contains.
+
+#The levels of sheep's hungry: 10 = no hungry; 0 = very hungry
+if sheep's hungry = 10:
+    
