@@ -1,5 +1,6 @@
 #下次非代码语句前请加井号谢谢。
 # Story (feed up the sheep) (forgive me if I did wrong, please!)
+# Go bottom to see my work.
 
 # pygame template
 
@@ -109,7 +110,7 @@ for food in pygame:
 
 #Rewrite the pygame of feeding up the sheep
 # Goals: There is food inside the basket, feed the sheep according to the levels of its hunger.
-# basket's entirety
+# basket's entirety:
 WIDTH, HEIGHT = 400, 400
 # Colour:
     Brown == full of the basket.
