@@ -9,8 +9,207 @@
 import pygame
 import sys
 import random
+import time
 
-# 初始化
+# 初始化Pygame
 pygame.init()
 width, height = 600, 400
 screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Game Selector")
+
+# 颜色定义
+yinlan = (181, 193, 207)
+lanhuise = (138, 164, 168)
+shibanhui = (112, 128, 105)
+tianlanse = (240, 255, 255)
+baiyan = (245, 245, 245)
+dankese = (252, 230, 201)
+xiangjiaose = (227, 207, 87)
+huluobose = (237, 145, 33)
+tianlan = (135, 206, 235)
+muzhise = (139, 69, 19)
+hongse = (178, 34, 34)
+GREEN = (34, 139, 34)
+BROWN = (139, 69, 19)
+YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+
+# 字体
+font = pygame.font.Font(None, 36)
+small_font = pygame.font.Font(None, 24)
+
+# 初始页面
+def start_screen():
+    while True:
+        screen.fill(tianlan)
+        title_text = font.render("Select a Game", True, BLACK)
+        screen.blit(title_text, (220, 100))
+        
+        # "Adam's Small Shop"按钮
+        shop_rect = pygame.draw.rect(screen, xiangjiaose, (200, 150, 200, 50))
+        shop_text = small_font.render("Adam's Small Shop", True, BLACK)
+        screen.blit(shop_text, (230, 165))
+
+        # "Farm Game"按钮
+        farm_rect = pygame.draw.rect(screen, xiangjiaose, (200, 250, 200, 50))
+        farm_text = small_font.render("Farm Game", True, BLACK)
+        screen.blit(farm_text, (260, 265))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if shop_rect.collidepoint(event.pos):
+                    adams_small_shop()
+                elif farm_rect.collidepoint(event.pos):
+                    farm_game()
+
+# 游戏1：Adam's Small Shop
+def adams_small_shop():
+    # 初始数据
+    money = 100
+    inventory = {"Carrot": 0, "Apple": 0}
+    crop_prices = {"Carrot": 10, "Apple": 15}
+    sell_prices = {"Carrot": 8, "Apple": 12}
+    is_daytime = True
+    day_timer = 0
+    night_start_time = None
+
+    def update_prices():
+        crop_prices["Carrot"] = random.randint(8, 12)
+        crop_prices["Apple"] = random.randint(12, 18)
+        sell_prices["Carrot"] = max(5, crop_prices["Carrot"] - 2)
+        sell_prices["Apple"] = max(8, crop_prices["Apple"] - 3)
+
+    update_prices()
+    running = True
+    while running:
+        screen.fill(tianlan if is_daytime else yinlan)
+
+        if night_start_time and (time.time() - night_start_time) >= 10:
+            is_daytime = True
+            night_start_time = None
+            update_prices()
+
+        if is_daytime:
+            pygame.draw.circle(screen, (255, 255, 0), (50, 50), 30)
+        else:
+            pygame.draw.circle(screen, (220, 220, 255), (50, 50), 30)
+
+        pygame.draw.rect(screen, shibanhui, (0, height // 2, width, height // 2))
+        pygame.draw.rect(screen, muzhise, (400, 50, 180, 100))
+        board_text = small_font.render("Today's Prices", True, baiyan)
+        screen.blit(board_text, (420, 60))
+
+        carrot_price_text = small_font.render(f"Carrot: Buy ${crop_prices['Carrot']} / Sell ${sell_prices['Carrot']}", True, baiyan)
+        apple_price_text = small_font.render(f"Apple: Buy ${crop_prices['Apple']} / Sell ${sell_prices['Apple']}", True, baiyan)
+        screen.blit(carrot_price_text, (420, 90))
+        screen.blit(apple_price_text, (420, 110))
+
+        money_text = small_font.render(f"Money: ${money}", True, (255, 255, 255))
+        inventory_text = small_font.render(f"Inventory - Carrot: {inventory['Carrot']}, Apple: {inventory['Apple']}", True, (255, 255, 255))
+        screen.blit(money_text, (10, 10))
+        screen.blit(inventory_text, (10, 50))
+
+        mouse_pos = pygame.mouse.get_pos()
+        button_clicked = False
+
+        buy_buttons = [("Buy Carrot", 50, crop_prices["Carrot"], "Carrot"), ("Buy Apple", 200, crop_prices["Apple"], "Apple")]
+        sell_buttons = [("Sell Carrot", 350, sell_prices["Carrot"], "Carrot"), ("Sell Apple", 500, sell_prices["Apple"], "Apple")]
+
+        for text, x, price, item in buy_buttons + sell_buttons:
+            if x < mouse_pos[0] < x + 100 and 300 < mouse_pos[1] < 340:
+                pygame.draw.rect(screen, xiangjiaose if is_daytime else lanhuise, (x, 300, 100, 40))
+                if pygame.mouse.get_pressed()[0] and is_daytime and not night_start_time:
+                    button_clicked = (text, item, price)
+            else:
+                pygame.draw.rect(screen, dankese, (x, 300, 100, 40))
+
+            button_text = small_font.render(text, True, hongse)
+            screen.blit(button_text, (x + 10, 310))
+
+        if button_clicked:
+            action, item, price = button_clicked
+            if "Buy" in action and money >= price:
+                money -= price
+                inventory[item] += 1
+            elif "Sell" in action and inventory[item] > 0:
+                money += price
+                inventory[item] -= 1
+
+        end_button = pygame.draw.rect(screen, hongse, (450, 20, 100, 40))
+        end_button_text = small_font.render("End Day", True, (0, 0, 0))
+        screen.blit(end_button_text, (460, 30))
+
+        if night_start_time:
+            countdown = 10 - int(time.time() - night_start_time)
+            countdown_text = small_font.render(f"Nighttime - {countdown} sec left", True, (255, 0, 0))
+            screen.blit(countdown_text, (180, 180))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if end_button.collidepoint(event.pos):
+                    is_daytime = False
+                    night_start_time = time.time()
+
+        pygame.time.Clock().tick(30)
+
+# 游戏2：Farm Game
+def farm_game():
+    leaves = []
+    sun_x = -100
+    click_count = 0
+    game_stage = 0
+
+    clock = pygame.time.Clock()
+    running = True
+    while running:
+        screen.fill(GREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if game_stage == 0 and 400 <= y <= 500:
+                    leaves.append([x, y])
+                    click_count += 1
+                    if click_count >= 6:
+                        game_stage = 1
+
+        if game_stage == 0:
+            draw_text("Press anywhere 6 times to plant tomatoes.", font, BLACK, 250, 50)
+        elif game_stage == 1:
+            draw_text("Please wait one day for your tomatoes.", font, BLACK, 250, 50)
+
+        pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))
+
+        for leaf in leaves:
+            if game_stage in [0, 1]:
+                pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
+            elif game_stage == 2:
+                pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), 20)
+
+        if game_stage == 1:
+            if sun_x < screen_width + 50:
+                pygame.draw.circle(screen, YELLOW, (sun_x, 100), 50)
+                sun_x += 2
+            else:
+                game_stage = 2
+
+        pygame.display.flip()
+        clock.tick(60)
+
+def draw_text(text, font, color, x, y):
+    text_obj = font.render(text, True, color)
+    screen.blit(text_obj, (x, y))
+
+# 运行
