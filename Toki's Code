@@ -23,64 +23,60 @@ click_count = 0  # 玩家点击次数
 game_stage = 0  # 游戏阶段（0：种植，1：等待生长，2：西红柿成熟）
 font = pygame.font.Font(None, 36)  # 文本字体
 
+# 创建游戏时钟
+clock = pygame.time.Clock()
 
 # 主游戏循环
-def main():
-    global sun_x, click_count, game_stage, leaves
+while True:
+    screen.fill(GREEN)  # 背景为绿色
 
-    clock = pygame.time.Clock()
+    # 检查事件
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            if game_stage == 0 and 400 <= y <= 500:  # 玩家点击土地，种植叶子
+                leaves.append([x, y])
+                click_count += 1
 
-    while True:
-        screen.fill(GREEN)  # 背景为绿色
+                # 当点击次数达到 6 次后，进入等待阶段
+                if click_count >= 6:
+                    game_stage = 1
 
-        # 检查事件
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                if game_stage == 0 and 400 <= y <= 500:  # 玩家点击土地，种植叶子
-                    leaves.append([x, y])
-                    click_count += 1
+    # 绘制文本：右上角显示提示文本
+    if game_stage == 0:
+        text = font.render("Press anywhere 6 times to plant tomatoes.", True, BLACK)
+        screen.blit(text, (250, 50))
+    elif game_stage == 1:
+        text = font.render("Please wait one day for your tomatoes.", True, BLACK)
+        screen.blit(text, (250, 50))
 
-                    # 当点击次数达到 6 次后，进入等待阶段
-                    if click_count >= 6:
-                        game_stage = 1
+    # 绘制土地（棕色长方形）
+    pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))  # (x, y, 宽, 高)
 
-        # 绘制文本：右上角显示提示文本
-        if game_stage == 0:
-            draw_text("Press anywhere 6 times to plant tomatoes.", font, BLACK, 250, 50)
-        elif game_stage == 1:
-            draw_text("Please wait one day for your tomatoes.", font, BLACK, 250, 50)
+    # 绘制叶子或西红柿
+    for leaf in leaves:
+        if game_stage == 0 or game_stage == 1:  # 在种植和等待阶段，显示叶子（绿色椭圆）
+            pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
+        elif game_stage == 2:  # 在西红柿成熟阶段，显示西红柿（红色圆形）
+            pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), 20)
 
-        # 绘制土地（棕色长方形）
-        pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))  # (x, y, 宽, 高)
+    # 绘制太阳的动画
+    if game_stage == 1:  # 只有在等待阶段才显示太阳
+        if sun_x < screen_width + 50:
+            pygame.draw.circle(screen, YELLOW, (sun_x, 100), 50)
+            sun_x += 2
+        else:
+            # 太阳完成一次移动，所有叶子变为西红柿
+            game_stage = 2
 
-        # 绘制叶子或西红柿
-        for leaf in leaves:
-            if game_stage == 0 or game_stage == 1:  # 在种植和等待阶段，显示叶子（绿色椭圆）
-                pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
-            elif game_stage == 2:  # 在西红柿成熟阶段，显示西红柿（红色圆形）
-                pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), 20)
+    # 更新屏幕
+    pygame.display.flip()
 
-        # 绘制太阳的动画
-        if game_stage == 1:  # 只有在等待阶段才显示太阳
-            if sun_x < screen_width + 50:
-                pygame.draw.circle(screen, YELLOW, (sun_x, 100), 50)
-                sun_x += 2
-            else:
-                # 太阳完成一次移动，所有叶子变为西红柿
-                game_stage = 2
-
-        # 更新屏幕
-        pygame.display.flip()
-
-        # 控制帧率
-        clock.tick(60)
-
-# 运行游戏
-main()
+    # 控制帧率
+    clock.tick(60)
 
 
 
