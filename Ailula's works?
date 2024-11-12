@@ -107,14 +107,16 @@ for food in pygame:
     elif:
         print("foods staying in the basket")
 
-#Rewrite the pygame of feed up the sheep
-# Goals:There are food inside the basket, feed the sheep according to the levels of its hungry.
+#Rewrite the pygame of feeding up the sheep
+# Goals: There is food inside the basket, feed the sheep according to the levels of its hunger.
 # basket's entirety
 WIDTH, HEIGHT = 400, 400
 # Colour:
     Brown == full of the basket.
-There are full food that it contains.
+There is full food in it.
 
-#The levels of sheep's hungry: 10 = no hungry; 0 = very hungry
-if sheep's hungry = 10:
-    
+#The levels of sheep's hungry: 0 = no hungry; 10 = very hungry
+if sheep's hungry = 0:
+    print("No food out)
+elif sheep's hungry <= 10; > 0:
+    print("Food out from the basket)
