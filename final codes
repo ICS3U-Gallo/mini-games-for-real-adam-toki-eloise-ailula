@@ -80,10 +80,12 @@ def adams_small_shop():
     night_start_time = None
 
     def update_prices():
+        add_price_carrot = random.randrange (-2, 2)
+        add_price_apple = random.randrange (-3, 3)
         crop_prices["Carrot"] = random.randint(8, 12)
         crop_prices["Apple"] = random.randint(12, 18)
-        sell_prices["Carrot"] = max(5, crop_prices["Carrot"] - 2)
-        sell_prices["Apple"] = max(8, crop_prices["Apple"] - 3)
+        sell_prices["Carrot"] = max(5, crop_prices["Carrot"] + add_price_carrot)
+        sell_prices["Apple"] = max(8, crop_prices["Apple"] + add_price_apple)
 
     update_prices()
     running = True
