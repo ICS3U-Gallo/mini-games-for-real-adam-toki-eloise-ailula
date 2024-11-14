@@ -199,6 +199,10 @@ def farm_game():
                 pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
             elif game_stage == 2:
                 pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), 20)
+                    
+        # 绘制盘子（右下角的白色椭圆形）
+        pygame.draw.ellipse(screen, WHITE, (plate_x, plate_y, plate_width, plate_height))  # 盘子位置（600, 500），宽120，高80
+
 
         if game_stage == 1:
             if sun_x < width + 50:
