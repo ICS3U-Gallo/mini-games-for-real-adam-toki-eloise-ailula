@@ -68,7 +68,7 @@ while True:
         text = font.render("Please wait one day for your tomatoes.", True, BLACK)
         screen.blit(text, (250, 50))
     elif game_stage == 2:
-        text = font.render("Your tomatoes are ready! Press the plate to collect all of them!", True, BLACK)
+        text = font.render("Your tomatoes are ready! Double press the plate to collect all of them!", True, BLACK)
         screen.blit(text, (100, 50))
 
     # 绘制土地（棕色长方形）
