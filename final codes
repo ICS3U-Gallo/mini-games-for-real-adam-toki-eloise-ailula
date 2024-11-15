@@ -1,5 +1,4 @@
 #Group theme: Works in farm
-
 #Eloise: Hen catching eggs
 #Toki: Planting vegetables
 #Ailula: Feeding the sheep
@@ -165,7 +164,7 @@ def adams_small_shop():
                     is_daytime = False
                     night_start_time = time.time()
 
-        pygame.time.Clock().tick(30)
+        pygame.time.Clock().tick(60)
 
 # 游戏2：Farm Game
 def farm_game():
