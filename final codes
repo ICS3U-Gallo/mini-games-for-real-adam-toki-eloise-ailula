@@ -55,7 +55,7 @@ def start_screen():
 
         # "Farm Game"按钮
         farm_rect = pygame.draw.rect(screen, xiangjiaose, (200, 250, 200, 50))
-        farm_text = small_font.render("Farm Game", True, BLACK)
+        farm_text = small_font.render("Toki's Farm Game", True, BLACK)
         screen.blit(farm_text, (260, 265))
 
         pygame.display.flip()
