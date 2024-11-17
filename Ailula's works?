@@ -1,123 +1,27 @@
 #下次非代码语句前请加井号谢谢。
+# Sunday, Nov 17th, 2024
 # Story (feed up the sheep) (forgive me if I did wrong, please!)
-# Go bottom to see my work.
-
-# pygame template
-
-import pygame
-
-pygame.init()
+# I realize I plagiarised, it is bad.
 
 # Goal:
-    # Set a basket,
-    # Put the food inside,
-    # If the sheep get hungry,
-    # Just feed it with the food from the basket.
+    There is food inside the basket that besides the sheep, if it feels hungry, feeds until it gets full in seventy-hundredth.
 
-WIDTH = 200
-HEIGHT = 200
-SIZE = (WIDTH, HEIGHT)
+# There is someone to feed it.
+pygame.draw.shape = someone()
+    feed the sheep if it feels hungry.
 
-screen = pygame.display.set_mode(SIZE)
-clock = pygame.time.Clock()
-
-# ---------------------------
-# Initialize global variables
-
-circle_x = 200
-circle_y = 200
-
-# ---------------------------
-
-running = True
-while running:
-    # EVENT HANDLING
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # GAME STATE UPDATES
-    # All game math and comparisons happen here
-
-    # DRAWING
-    screen.fill((255, 255, 255))  # always the first drawing command
-
-    pygame.draw.circle(screen, (0, 0, 255), (circle_x, circle_y), 30)
-
-    # Must be the last two lines
-    # of the game loop
-    pygame.display.flip()
-    clock.tick(30)
-    #---------------------------
-
-
-pygame.quit()
-
-# Nov 7th, 2024:
-# Goal:
-# Continue to feed up the sheep if it feels hungry.
-
-# pygame template
-
-import pygame
-
-pygame.init()
-
-WIDTH = 640
-HEIGHT = 480
-SIZE = (WIDTH, HEIGHT)
-
-screen = pygame.display.set_mode(SIZE)
-clock = pygame.time.Clock()
-
-# ---------------------------
-# Initialize global variables
-
-circle_x = 200
-circle_y = 200
-
-# ---------------------------
-
-running = True
-while running:
-    # EVENT HANDLING
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # GAME STATE UPDATES
-    # All game math and comparisons happen here
-
-    # DRAWING
-    screen.fill((255, 255, 255))  # always the first drawing command
-
-    pygame.draw.circle(screen, (0, 0, 255), (circle_x, circle_y), 30)
-
-    # Must be the last two lines
-    # of the game loop
-    pygame.display.flip()
-    clock.tick(30)
-    #---------------------------
-
-
-pygame.quit()
-
-for food in pygame:
-    if sheep hungry:
-        print("food out from basket")
-    elif:
-        print("foods staying in the basket")
-
-#Rewrite the pygame of feeding up the sheep
-# Goals: There is food inside the basket, feed the sheep according to the levels of its hunger.
-# basket's entirety:
+# THis is the appearance of the basket.
 WIDTH, HEIGHT = 400, 400
 # Colour:
     Brown == full of the basket.
 There is full food in it.
 
-#The levels of sheep's hungry: 0 = no hungry; 10 = very hungry
-if sheep's hungry = 0:
-    print("No food out)
-elif sheep's hungry <= 10; > 0:
-    print("Food out from the basket)
+# The levels of sheep's hungry: = 0 == no hungry; <= 7 == somewhat hungry; >7, <= 10 == very hungry
+    if sheep hungry = 0:
+        print("nothing out from basket")
+    elif sheep hungry <= 5:
+        print("a bit of foods out from the basket")
+    elif sheep hungry <= 7:
+        print("some food out from the basket")
+    else sheep hungry >7, <=10:
+        print("lots of food out from the basket")
