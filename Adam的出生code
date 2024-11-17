@@ -1,0 +1,143 @@
+import pygame
+import sys
+import random
+import time
+
+# 初始化 Pygame
+pygame.init()
+width, height = 600, 400
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Adam's Small Shop")
+
+# 颜色设置
+yinlan = (181, 193, 207)
+lanhuise = (138, 164, 168)
+shibanhui = (112, 128, 105)
+tianlanse = (240, 255, 255)
+baiyan = (245, 245, 245)
+dankese = (252, 230, 201)
+xiangjiaose = (227, 207, 87)
+huluobose = (237, 145, 33)
+tianlan = (135, 206, 235)
+muzhise = (139, 69, 19)
+hongse = (178, 34, 34)
+
+# 游戏数据
+money = 100
+inventory = {"Carrot": 0, "Apple": 0}
+crop_prices = {"Carrot": 10, "Apple": 15}
+sell_prices = {"Carrot": 8, "Apple": 12}
+
+# 字体
+font = pygame.font.Font(None, 24)  # 小号字体
+small_font = pygame.font.Font(None, 20)
+
+# 游戏状态
+is_daytime = True  # 用于控制白天和夜晚
+day_timer = 0      # 用于计时控制白天与夜晚的切换
+day_duration = 500  # 白天持续的帧数，控制天数的进度
+night_start_time = None  # 记录夜晚开始时间
+
+# 随机价格生成函数
+def update_prices():
+    crop_prices["Carrot"] = random.randint(8, 12)
+    crop_prices["Apple"] = random.randint(12, 18)
+    sell_prices["Carrot"] = max(5, crop_prices["Carrot"] - 2)
+    sell_prices["Apple"] = max(8, crop_prices["Apple"] - 3)
+
+# 更新初始价格
+update_prices()
+
+# 游戏主循环
+running = True
+while running:
+    screen.fill(tianlan if is_daytime else yinlan)
+
+    # 切换白天和夜晚或手动进入黑夜
+    if night_start_time and (time.time() - night_start_time) >= 10:
+        is_daytime = True  # 夜晚结束，回到白天
+        night_start_time = None
+        update_prices()  # 新的一天，更新价格
+
+    # 显示太阳或月亮
+    if is_daytime:
+        pygame.draw.circle(screen, (255, 255, 0), (50, 50), 30)  # 显示太阳
+    else:
+        pygame.draw.circle(screen, (220, 220, 255), (50, 50), 30)  # 显示月亮
+
+    # 绘制底部木质区域
+    pygame.draw.rect(screen, shibanhui, (0, height // 2, width, height // 2))
+
+    # 木制价格板
+    pygame.draw.rect(screen, muzhise, (400, 50, 180, 100))
+    board_text = font.render("Today's Prices", True, baiyan)
+    screen.blit(board_text, (420, 60))
+
+    carrot_price_text = small_font.render(f"Carrot: Buy ${crop_prices['Carrot']} / Sell ${sell_prices['Carrot']}", True, baiyan)
+    apple_price_text = small_font.render(f"Apple: Buy ${crop_prices['Apple']} / Sell ${sell_prices['Apple']}", True, baiyan)
+    screen.blit(carrot_price_text, (420, 90))
+    screen.blit(apple_price_text, (420, 110))
+
+    # 金钱和库存信息展示
+    money_text = font.render(f"Money: ${money}", True, (255, 255, 255))
+    inventory_text = font.render(f"Inventory - Carrot: {inventory['Carrot']}, Apple: {inventory['Apple']}", True, (255, 255, 255))
+    screen.blit(money_text, (10, 10))
+    screen.blit(inventory_text, (10, 50))
+
+    # 鼠标位置
+    mouse_pos = pygame.mouse.get_pos()
+    button_clicked = False
+
+    # 购买和出售按钮
+    buy_buttons = [("Buy Carrot", 50, crop_prices["Carrot"], "Carrot"), ("Buy Apple", 200, crop_prices["Apple"], "Apple")]
+    sell_buttons = [("Sell Carrot", 350, sell_prices["Carrot"], "Carrot"), ("Sell Apple", 500, sell_prices["Apple"], "Apple")]
+
+    for text, x, price, item in buy_buttons + sell_buttons:
+        if x < mouse_pos[0] < x + 100 and 300 < mouse_pos[1] < 340:
+            pygame.draw.rect(screen, xiangjiaose if is_daytime else lanhuise, (x, 300, 100, 40))
+            if pygame.mouse.get_pressed()[0] and is_daytime and not night_start_time:  # 仅允许白天交易
+                button_clicked = (text, item, price)
+        else:
+            pygame.draw.rect(screen, dankese, (x, 300, 100, 40))
+
+        button_text = small_font.render(text, True, hongse)
+        screen.blit(button_text, (x + 10, 310))
+
+    # 检查点击的按钮
+    if button_clicked:
+        action, item, price = button_clicked
+        if "Buy" in action and money >= price:
+            money -= price
+            inventory[item] += 1
+        elif "Sell" in action and inventory[item] > 0:
+            money += price
+            inventory[item] -= 1
+
+    # 结束按钮
+    if 450 < mouse_pos[0] < 550 and 20 < mouse_pos[1] < 60:
+        pygame.draw.rect(screen, hongse, (450, 20, 100, 40))
+        if pygame.mouse.get_pressed()[0]:
+            is_daytime = False
+            night_start_time = time.time()
+    else:
+        pygame.draw.rect(screen, dankese, (450, 20, 100, 40))
+
+    end_button_text = small_font.render("End Day", True, (0, 0, 0))
+    screen.blit(end_button_text, (460, 30))
+
+    # 显示夜晚倒计时
+    if night_start_time:
+        countdown = 10 - int(time.time() - night_start_time)
+        countdown_text = font.render(f"Nighttime - {countdown} sec left", True, (255, 0, 0))
+        screen.blit(countdown_text, (180, 180))
+
+    pygame.display.flip()
+
+    # 事件处理
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    pygame.time.Clock().tick(30)
+
+pygame.quit()
+sys.exit()

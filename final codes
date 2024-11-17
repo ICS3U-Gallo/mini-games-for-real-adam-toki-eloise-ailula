@@ -1,0 +1,269 @@
+#Group theme: Works in farm
+#Eloise: Hen catching eggs
+#Toki: Planting vegetables
+#Ailula: Feeding the sheep
+#Adam: Selling the eggs and vegetables
+# 8天至少
+
+import pygame
+import sys
+import random
+import time
+import math
+
+
+# 初始化Pygame
+pygame.init()
+width, height = 800, 600
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Game Selector")
+
+# 颜色定义
+yinlan = (181, 193, 207)
+lanhuise = (138, 164, 168)
+shibanhui = (112, 128, 105)
+tianlanse = (240, 255, 255)
+baiyan = (245, 245, 245)
+dankese = (252, 230, 201)
+xiangjiaose = (227, 207, 87)
+huluobose = (237, 145, 33)
+tianlan = (135, 206, 235)
+muzhise = (139, 69, 19)
+hongse = (178, 34, 34)
+GREEN = (34, 139, 34)
+BROWN = (139, 69, 19)
+YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+# 字体
+font = pygame.font.Font(None, 36)
+small_font = pygame.font.Font(None, 24)
+
+# 初始页面
+def start_screen():
+    while True:
+        screen.fill(tianlan)
+        title_text = font.render("Select a Game", True, BLACK)
+        screen.blit(title_text, (220, 100))
+        
+        # "Adam's Small Shop"按钮
+        shop_rect = pygame.draw.rect(screen, xiangjiaose, (200, 150, 200, 50))
+        shop_text = small_font.render("Adam's Small Shop", True, BLACK)
+        screen.blit(shop_text, (230, 165))
+
+        # "Farm Game"按钮
+        farm_rect = pygame.draw.rect(screen, xiangjiaose, (200, 250, 200, 50))
+        farm_text = small_font.render("Toki's Farm Game", True, BLACK)
+        screen.blit(farm_text, (260, 265))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if shop_rect.collidepoint(event.pos):
+                    adams_small_shop()
+                elif farm_rect.collidepoint(event.pos):
+                    farm_game()
+
+# 游戏1：Adam's Small Shop
+def adams_small_shop():
+    # 初始数据
+    money = 100
+    inventory = {"Carrot": 0, "Apple": 0}
+    crop_prices = {"Carrot": 10, "Apple": 15}
+    sell_prices = {"Carrot": 8, "Apple": 12}
+    is_daytime = True
+    day_timer = 0
+    night_start_time = None
+
+    def update_prices():
+        add_price_carrot = random.randrange (-2, 2)
+        add_price_apple = random.randrange (-3, 3)
+        crop_prices["Carrot"] = random.randint(8, 12)
+        crop_prices["Apple"] = random.randint(12, 18)
+        sell_prices["Carrot"] = max(5, crop_prices["Carrot"] + add_price_carrot)
+        sell_prices["Apple"] = max(8, crop_prices["Apple"] + add_price_apple)
+
+    update_prices()
+    running = True
+    while running:
+        screen.fill(tianlan if is_daytime else yinlan)
+
+        if night_start_time and (time.time() - night_start_time) >= 10:
+            is_daytime = True
+            night_start_time = None
+            update_prices()
+
+        if is_daytime:
+            pygame.draw.circle(screen, (255, 255, 0), (50, 50), 30)
+        else:
+            pygame.draw.circle(screen, (220, 220, 255), (50, 50), 30)
+
+        pygame.draw.rect(screen, shibanhui, (0, height // 2, width, height // 2))
+        pygame.draw.rect(screen, muzhise, (400, 50, 180, 100))
+        board_text = small_font.render("Today's Prices", True, baiyan)
+        screen.blit(board_text, (420, 60))
+
+        carrot_price_text = small_font.render(f"Carrot: Buy ${crop_prices['Carrot']} / Sell ${sell_prices['Carrot']}", True, baiyan)
+        apple_price_text = small_font.render(f"Apple: Buy ${crop_prices['Apple']} / Sell ${sell_prices['Apple']}", True, baiyan)
+        screen.blit(carrot_price_text, (420, 90))
+        screen.blit(apple_price_text, (420, 110))
+
+        money_text = small_font.render(f"Money: ${money}", True, (255, 255, 255))
+        inventory_text = small_font.render(f"Inventory - Carrot: {inventory['Carrot']}, Apple: {inventory['Apple']}", True, (255, 255, 255))
+        screen.blit(money_text, (10, 10))
+        screen.blit(inventory_text, (10, 50))
+
+        mouse_pos = pygame.mouse.get_pos()
+        button_clicked = False
+
+        buy_buttons = [("Buy Carrot", 50, crop_prices["Carrot"], "Carrot"), ("Buy Apple", 200, crop_prices["Apple"], "Apple")]
+        sell_buttons = [("Sell Carrot", 350, sell_prices["Carrot"], "Carrot"), ("Sell Apple", 500, sell_prices["Apple"], "Apple")]
+
+        for text, x, price, item in buy_buttons + sell_buttons:
+            if x < mouse_pos[0] < x + 100 and 300 < mouse_pos[1] < 340:
+                pygame.draw.rect(screen, xiangjiaose if is_daytime else lanhuise, (x, 300, 100, 40))
+                if pygame.mouse.get_pressed()[0] and is_daytime and not night_start_time:
+                    button_clicked = (text, item, price)
+            else:
+                pygame.draw.rect(screen, dankese, (x, 300, 100, 40))
+
+            button_text = small_font.render(text, True, hongse)
+            screen.blit(button_text, (x + 10, 310))
+
+        if button_clicked:
+            action, item, price = button_clicked
+            if "Buy" in action and money >= price:
+                money -= price
+                inventory[item] += 1
+            elif "Sell" in action and inventory[item] > 0:
+                money += price
+                inventory[item] -= 1
+
+        end_button = pygame.draw.rect(screen, hongse, (450, 20, 100, 40))
+        end_button_text = small_font.render("End Day", True, (0, 0, 0))
+        screen.blit(end_button_text, (460, 30))
+
+        if night_start_time:
+            countdown = 10 - int(time.time() - night_start_time)
+            countdown_text = small_font.render(f"Nighttime - {countdown} sec left", True, (255, 0, 0))
+            screen.blit(countdown_text, (180, 180))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if end_button.collidepoint(event.pos):
+                    is_daytime = False
+                    night_start_time = time.time()
+
+        pygame.time.Clock().tick(60)
+
+# 游戏2：Farm Game
+def farm_game():
+    leaves = []  # 存储叶子的位置
+    tomatoes_collected = []  # 存储已收集的西红柿位置
+    sun_x = -100  # 太阳初始位置
+    click_count = 0  # 玩家点击次数
+    game_stage = 0  # 游戏阶段（0：种植，1：等待生长，2：西红柿成熟，3：收集西红柿，4：游戏结束）
+    font = pygame.font.Font(None, 24)  # 小字体
+    font_large = pygame.font.Font(None, 48)  # 大字体（缩小）
+    tomato_radius = 20  # 西红柿半径
+    plate_x, plate_y, plate_width, plate_height = 600, 500, 120, 80  # 盘子的位置和大小
+
+    # 创建游戏时钟
+    clock = pygame.time.Clock()
+    
+    while True:
+        screen.fill(GREEN)  # 背景为绿色
+
+        # 检查事件
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if game_stage == 0 and 400 <= y <= 500:  # 玩家点击土地，种植叶子
+                    leaves.append([x, y])
+                    click_count += 1
+
+                    # 当点击次数达到 6 次后，进入等待阶段
+                    if click_count >= 6:
+                        game_stage = 1
+                elif game_stage == 2:  # 玩家点击西红柿将其移到盘子
+                # 判断玩家是否点击了盘子
+                    if plate_x <= x <= plate_x + plate_width and plate_y <= y <= plate_y + plate_height:
+                        # 将所有西红柿移到盘子中
+                        tomatoes_collected = [[plate_x + plate_width // 2, plate_y + plate_height // 2] for _ in leaves]
+                        leaves = []  # 清空叶子（西红柿已经收集）
+                        game_stage = 3  # 进入收集西红柿阶段
+                elif game_stage == 3:  # 游戏结束，进入游戏结束阶段
+                    game_stage = 4  # 游戏结束
+
+        # 绘制文本：根据游戏阶段显示不同的文本
+        if game_stage == 0:
+            text = font.render("Press anywhere 6 times to plant tomatoes.", True, BLACK)
+            screen.blit(text, (150, 50))
+        elif game_stage == 1:
+            text = font.render("Please wait one day for your tomatoes.", True, BLACK)
+            screen.blit(text, (250, 50))
+        elif game_stage == 2:
+            text = font.render("Your tomatoes are ready! Double press the plate to collect all of them!", True, BLACK)
+            screen.blit(text, (100, 50))
+
+        # 绘制土地（棕色长方形）
+        pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))  # (x, y, 宽, 高)
+
+        # 绘制叶子或西红柿
+        for leaf in leaves:
+            if game_stage == 0 or game_stage == 1:  # 在种植和等待阶段，显示叶子（绿色椭圆）
+                pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
+            elif game_stage == 2:  # 在西红柿成熟阶段，显示西红柿（红色圆形）
+                pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), tomato_radius)
+
+            # 绘制盘子（右下角的白色椭圆形）
+        pygame.draw.ellipse(screen, WHITE, (plate_x, plate_y, plate_width, plate_height))  # 盘子位置（600, 500），宽120，高80
+
+        # 绘制已经收集的西红柿
+        if game_stage == 3:
+            # 计算每个西红柿在盘子内部的位置，使用极坐标系统
+            angle_step = 2 * math.pi / 6  # 每个西红柿之间的角度步长
+            for i in range(6):
+                angle = i * angle_step
+                # 计算西红柿位置（以盘子中心为基准，加入一些偏移量）
+                x_pos = plate_x + plate_width // 2 + (plate_width // 3) * math.cos(angle)
+                y_pos = plate_y + plate_height // 2 + (plate_height // 3) * math.sin(angle)
+                pygame.draw.circle(screen, RED, (int(x_pos), int(y_pos)), tomato_radius)
+
+    
+
+        # 绘制太阳的动画
+        if game_stage == 1:  # 只有在等待阶段才显示太阳
+            if sun_x < width + 50:
+                pygame.draw.circle(screen, YELLOW, (sun_x, 100), 50)
+                sun_x += 2
+            else:
+                # 太阳完成一次移动，所有叶子变为西红柿
+                game_stage = 2
+
+        # 游戏结束阶段，显示大文本
+        if game_stage == 4:
+            text = font_large.render("Good job, enjoy your tomatoes!!!", True, BLACK)
+            screen.blit(text, (150, 250))
+
+        # 更新屏幕
+        pygame.display.flip()
+
+        # 控制帧率
+        clock.tick(60)
+
+#运行
+start_screen()

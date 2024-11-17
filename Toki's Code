@@ -1,0 +1,120 @@
+import pygame
+import math
+
+# 初始化Pygame
+pygame.init()
+
+# 设置窗口
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Farm Game")
+
+# 颜色定义
+GREEN = (34, 139, 34)  # 草地背景色
+BROWN = (139, 69, 19)  # 土地颜色
+YELLOW = (255, 255, 0)  # 太阳颜色
+RED = (255, 0, 0)  # 西红柿颜色
+BLACK = (0, 0, 0)  # 文本颜色
+WHITE = (255, 255, 255)  # 盘子颜色
+
+# 游戏变量
+leaves = []  # 存储叶子的位置
+tomatoes_collected = []  # 存储已收集的西红柿位置
+sun_x = -100  # 太阳初始位置
+click_count = 0  # 玩家点击次数
+game_stage = 0  # 游戏阶段（0：种植，1：等待生长，2：西红柿成熟，3：收集西红柿，4：游戏结束）
+font = pygame.font.Font(None, 24)  # 小字体
+font_large = pygame.font.Font(None, 48)  # 大字体（缩小）
+tomato_radius = 20  # 西红柿半径
+plate_x, plate_y, plate_width, plate_height = 600, 500, 120, 80  # 盘子的位置和大小
+
+# 创建游戏时钟
+clock = pygame.time.Clock()
+
+# 主游戏循环
+while True:
+    screen.fill(GREEN)  # 背景为绿色
+
+    # 检查事件
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            if game_stage == 0 and 400 <= y <= 500:  # 玩家点击土地，种植叶子
+                leaves.append([x, y])
+                click_count += 1
+
+                # 当点击次数达到 6 次后，进入等待阶段
+                if click_count >= 6:
+                    game_stage = 1
+            elif game_stage == 2:  # 玩家点击西红柿将其移到盘子
+                # 判断玩家是否点击了盘子
+                if plate_x <= x <= plate_x + plate_width and plate_y <= y <= plate_y + plate_height:
+                    # 将所有西红柿移到盘子中
+                    tomatoes_collected = [[plate_x + plate_width // 2, plate_y + plate_height // 2] for _ in leaves]
+                    leaves = []  # 清空叶子（西红柿已经收集）
+                    game_stage = 3  # 进入收集西红柿阶段
+            elif game_stage == 3:  # 游戏结束，进入游戏结束阶段
+                game_stage = 4  # 游戏结束
+
+    # 绘制文本：根据游戏阶段显示不同的文本
+    if game_stage == 0:
+        text = font.render("Press anywhere 6 times to plant tomatoes.", True, BLACK)
+        screen.blit(text, (150, 50))
+    elif game_stage == 1:
+        text = font.render("Please wait one day for your tomatoes.", True, BLACK)
+        screen.blit(text, (250, 50))
+    elif game_stage == 2:
+        text = font.render("Your tomatoes are ready! Double press the plate to collect all of them!", True, BLACK)
+        screen.blit(text, (100, 50))
+
+    # 绘制土地（棕色长方形）
+    pygame.draw.rect(screen, BROWN, (100, 400, 600, 100))  # (x, y, 宽, 高)
+
+    # 绘制叶子或西红柿
+    for leaf in leaves:
+        if game_stage == 0 or game_stage == 1:  # 在种植和等待阶段，显示叶子（绿色椭圆）
+            pygame.draw.ellipse(screen, (0, 128, 0), (leaf[0] - 15, leaf[1] - 7, 30, 15))
+        elif game_stage == 2:  # 在西红柿成熟阶段，显示西红柿（红色圆形）
+            pygame.draw.circle(screen, RED, (leaf[0], leaf[1]), tomato_radius)
+
+            # 绘制盘子（右下角的白色椭圆形）
+    pygame.draw.ellipse(screen, WHITE, (plate_x, plate_y, plate_width, plate_height))  # 盘子位置（600, 500），宽120，高80
+
+    # 绘制已经收集的西红柿
+    if game_stage == 3:
+        # 计算每个西红柿在盘子内部的位置，使用极坐标系统
+        angle_step = 2 * math.pi / 6  # 每个西红柿之间的角度步长
+        for i in range(6):
+            angle = i * angle_step
+            # 计算西红柿位置（以盘子中心为基准，加入一些偏移量）
+            x_pos = plate_x + plate_width // 2 + (plate_width // 3) * math.cos(angle)
+            y_pos = plate_y + plate_height // 2 + (plate_height // 3) * math.sin(angle)
+            pygame.draw.circle(screen, RED, (int(x_pos), int(y_pos)), tomato_radius)
+
+    
+
+    # 绘制太阳的动画
+    if game_stage == 1:  # 只有在等待阶段才显示太阳
+        if sun_x < screen_width + 50:
+            pygame.draw.circle(screen, YELLOW, (sun_x, 100), 50)
+            sun_x += 2
+        else:
+            # 太阳完成一次移动，所有叶子变为西红柿
+            game_stage = 2
+
+    # 游戏结束阶段，显示大文本
+    if game_stage == 4:
+        text = font_large.render("Good job, enjoy your tomatoes!!!", True, BLACK)
+        screen.blit(text, (150, 250))
+
+    # 更新屏幕
+    pygame.display.flip()
+
+    # 控制帧率
+    clock.tick(60)
+
+

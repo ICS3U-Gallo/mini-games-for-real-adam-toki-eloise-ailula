@@ -1,0 +1,95 @@
+#下次非代码语句前请加井号谢谢。
+# Sunday, Nov 17th, 2024
+# Story (feed up the sheep) (forgive me if I did wrong, please!)
+#只能帮你到这了。你不用改了。
+import pygame
+import random
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions and display setup
+width, height = 600, 400
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Feeding the Sheep")
+
+# Colors
+white = (255, 255, 255)
+black = (0, 0, 0)
+green = (0, 255, 0)
+brown = (139, 69, 19)
+
+# Load images
+sheep = pygame.image.load("sheep.png")
+sheep = pygame.transform.scale(sheep, (100, 100))  # Adjust to desired size
+food = pygame.image.load("food.png")
+food = pygame.transform.scale(food, (30, 30))  # Adjust to desired size
+
+# Sheep position
+sheep_x = width // 2 - 50
+sheep_y = height - 110
+
+# Basket position and properties
+basket_x = width // 2
+basket_y = height - 70
+basket_width = 80
+basket_speed = 7
+
+# Food properties
+food_x = random.randint(0, width - 30)
+food_y = 0
+food_speed = 5
+
+# Game variables
+score = 0
+font = pygame.font.Font(None, 36)
+
+# Main game loop
+running = True
+while running:
+    screen.fill(white)
+
+    # Draw sheep and basket
+    screen.blit(sheep, (sheep_x, sheep_y))
+    pygame.draw.rect(screen, brown, (basket_x, basket_y, basket_width, 20))
+    
+    # Draw falling food
+    screen.blit(food, (food_x, food_y))
+
+    # Food movement
+    food_y += food_speed
+
+    # Check if food is caught by the basket
+    if basket_x < food_x < basket_x + basket_width and basket_y < food_y < basket_y + 20:
+        score += 1
+        food_x = random.randint(0, width - 30)
+        food_y = 0
+
+    # Check if food hits the ground
+    if food_y > height:
+        food_x = random.randint(0, width - 30)
+        food_y = 0
+
+    # Draw score
+    score_text = font.render("Score: " + str(score), True, black)
+    screen.blit(score_text, (10, 10))
+
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Basket movement
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and basket_x > 0:
+        basket_x -= basket_speed
+    if keys[pygame.K_RIGHT] and basket_x < width - basket_width:
+        basket_x += basket_speed
+
+    # Update display
+    pygame.display.flip()
+    pygame.time.Clock().tick(30)
+
+pygame.quit()
+sys.exit()
